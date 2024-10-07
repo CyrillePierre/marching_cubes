@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkp31fyrty2x1"]
+
+[ext_resource type="Script" path="res://scripts/marching_cubes.gd" id="1_lidwy"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_e1lbk"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_l3mta"]
+
+[node name="root" type="Node3D"]
+
+[node name="marching_cubes" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("ArrayMesh_e1lbk")
+script = ExtResource("1_lidwy")
+
+[node name="plane" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_l3mta")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.962337, -0.137718, 0.234397, -4.20715e-08, 0.862196, 0.506576, -0.27186, -0.487496, 0.829722, 0.584152, 2.17376, 2.16761)
