@@ -1,16 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://dkp31fyrty2x1"]
+[gd_scene load_steps=5 format=4 uid="uid://dkp31fyrty2x1"]
 
 [ext_resource type="Script" path="res://scripts/marching_cubes.gd" id="1_lidwy"]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_aj8dp"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_axjw1"]
 _surfaces = [{
-"aabb": AABB(0, 0, 0, 0.5, 1e-05, 0.5),
-"format": 34359738369,
+"aabb": AABB(-0.5, -0.5, -0.5, 2, 3, 1.5),
+"format": 34359738375,
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 3,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63)
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AAAAAAAAgD8AAAC/AAAAvwAAgD8AAIA/AADAPwAAAL8AAIA/AADAPwAAAL8AAIA/AAAAvwAAgD8AAIA/AAAAAAAAgD8AAAA/AAAAvwAAgD8AAIA/AADAPwAAIEAAAIA/AAAAAAAAgD8AAAC/AAAAvwAAgD8AAIA/AAAAAAAAgD8AAAA/AADAPwAAIEAAAIA//6//v3BHXtD/r/+/cEde0P+v/79wR17QMjNmJrE+6sMyM2YmsT7qwzIzZiaxPurD/z//z0Q+gqn/P//PRD6Cqf8//89EPoKpZabMTNs2pqBlpsxM2zamoGWmzEzbNqag")
 }]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_x4x0j"]
+cull_mode = 2
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_l3mta"]
 
@@ -18,9 +21,9 @@ _surfaces = [{
 
 [node name="marching_cubes" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("ArrayMesh_aj8dp")
+mesh = SubResource("ArrayMesh_axjw1")
+surface_material_override/0 = SubResource("ORMMaterial3D_x4x0j")
 script = ExtResource("1_lidwy")
-cube_size = 1.0
 
 [node name="plane" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_l3mta")
