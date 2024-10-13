@@ -1,39 +1,28 @@
-[gd_scene load_steps=5 format=4 uid="uid://dkp31fyrty2x1"]
+[gd_scene load_steps=3 format=3 uid="uid://dkp31fyrty2x1"]
 
 [ext_resource type="Script" path="res://scripts/marching_cubes.gd" id="1_lidwy"]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_nsucx"]
-_surfaces = [{
-"aabb": AABB(0.5, 0.5, 0.5, 1, 1, 1),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("AACAPwAAAD8AAIA/AACAPwAAgD8AAAA/AAAAPwAAgD8AAIA/AACAPwAAAD8AAIA/AAAAPwAAgD8AAIA/AACAPwAAgD8AAMA/AACAPwAAgD8AAAA/AACAPwAAwD8AAIA/AAAAPwAAgD8AAIA/AAAAPwAAgD8AAIA/AACAPwAAwD8AAIA/AACAPwAAgD8AAMA/AACAPwAAgD8AAAA/AACAPwAAAD8AAIA/AADAPwAAgD8AAIA/AADAPwAAgD8AAIA/AACAPwAAAD8AAIA/AACAPwAAgD8AAMA/AACAPwAAgD8AAAA/AADAPwAAgD8AAIA/AACAPwAAwD8AAIA/AADAPwAAgD8AAIA/AACAPwAAgD8AAMA/AACAPwAAwD8AAIA/qqqqqv8//7+qqqqq/z//v6qqqqr/P/+/VNVU1QAAAIBU1VTVAAAAgFTVVNUAAACAqqpUVf8//5+qqlRV/z//n6qqVFX/P/+fVNWqKv9//59U1aoq/3//n1TVqir/f/+fVFWqqv9//59UVaqq/3//n1RVqqr/f/+fqipU1f8//5+qKlTV/z//n6oqVNX/P/+fVFVUVQAAAIBUVVRVAAAAgFRVVFUAAACAqiqqKv8//7+qKqoq/z//v6oqqir/P/+/")
-}]
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_ymf65"]
-cull_mode = 2
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_l3mta"]
 
 [node name="root" type="Node3D"]
 
 [node name="marching_cubes" type="MeshInstance3D" parent="."]
-mesh = SubResource("ArrayMesh_nsucx")
-surface_material_override/0 = SubResource("ORMMaterial3D_ymf65")
 script = ExtResource("1_lidwy")
-resolution = 2
+resolution = 11
 
 [node name="plane" type="MeshInstance3D" parent="."]
-visible = false
 mesh = SubResource("PlaneMesh_l3mta")
 
 [node name="camera" type="Camera3D" parent="."]
-transform = Transform3D(0.962337, -0.137718, 0.234397, -4.20715e-08, 0.862196, 0.506576, -0.27186, -0.487496, 0.829722, 0.584152, 2.17376, 2.16761)
+transform = Transform3D(0.962337, -0.137717, 0.234397, -4.20715e-08, 0.862196, 0.506575, -0.27186, -0.487496, 0.829723, 1.86052, 2.17376, 4.92305)
 
-[node name="light" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.5, 0.75, -0.433013, 0, 0.5, 0.866025, 0.866025, 0.433013, -0.25, -3, 2, 0)
+[node name="light1" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.627019, 0.464174, -0.625611, -0.106388, 0.744543, 0.659043, 0.771705, 0.47979, -0.41746, -3, 2, 0)
+light_energy = 0.7
+
+[node name="light2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.152874, 0.299538, 0.941757, -0.755681, 0.649541, -0.0839265, -0.636849, -0.698838, 0.325652, -3, 2, -1.832)
+light_energy = 0.1
 
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)

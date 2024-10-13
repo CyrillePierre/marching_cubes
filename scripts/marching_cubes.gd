@@ -333,7 +333,10 @@ func initialize_density_map() -> void:
 	_density_map.resize((resolution + 1) ** 3)
 	_density_map.fill(1.)
 	
-	set_density(1, 1, 1, -1.0)
+	for i in range(1, resolution - 1):
+		for j in range(1, resolution - 1):
+			for k in range(1, resolution - 1):
+				set_density(i, j, k, randf_range(-1, 1))
 				
 func get_density(i: int, j: int, k: int) -> float:
 	return _density_map[i + (j + k * (resolution + 1)) * (resolution + 1)]
@@ -441,7 +444,7 @@ func create_triangles(cell: Dictionary) -> Dictionary:
 		var v1 = vertices[triangle_indexes[i + 0]]
 		var v2 = vertices[triangle_indexes[i + 1]]
 		var v3 = vertices[triangle_indexes[i + 2]]
-		var normal = (v2 - v1).cross(v3 - v1).normalized()
+		var normal = (v1 - v2).cross(v3 - v1).normalized()
 		triangles.vertices.append_array([v1, v2, v3])
 		triangles.normals.append_array([normal, normal, normal])
 		triangles.n += 1
