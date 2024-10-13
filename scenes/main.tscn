@@ -26,18 +26,18 @@ points = PackedVector3Array(-1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1)
 
 [node name="root" type="Node3D"]
 
-[node name="dynamic_ground" type="StaticBody3D" parent="."]
+[node name="dynamic_terrain" type="StaticBody3D" parent="."]
 script = ExtResource("1_lidwy")
 grid_size = Vector3i(40, 20, 40)
 height_map = SubResource("NoiseTexture2D_8o6ga")
 height_coef = 1.05
 height_offset = 0.315
 
-[node name="mesh" type="MeshInstance3D" parent="dynamic_ground"]
+[node name="mesh" type="MeshInstance3D" parent="dynamic_terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 skeleton = NodePath("../..")
 
-[node name="collision" type="CollisionShape3D" parent="dynamic_ground"]
+[node name="collision" type="CollisionShape3D" parent="dynamic_terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 
 [node name="platform" type="StaticBody3D" parent="."]

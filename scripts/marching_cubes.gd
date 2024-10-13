@@ -413,11 +413,13 @@ func create_mesh() -> void:
 	var vertices = PackedVector3Array()
 	var normals = PackedVector3Array()
 	
+	var nb_triangles = 0
 	for cell in _cells:
 		var triangles = create_triangles(cell)
 		if triangles.n > 0:
 			vertices.append_array(triangles.vertices)
 			normals.append_array(triangles.normals)
+			nb_triangles += triangles.n
 
 	var arrays = []
 	arrays.resize(Mesh.ARRAY_MAX)
@@ -432,6 +434,7 @@ func create_mesh() -> void:
 	
 	$mesh.mesh = array_mesh
 	$collision.shape = shape
+	print("number of generated triangles: ", nb_triangles)
 	
 func get_pos(i: int, j: int, k: int) -> Vector3:
 	return Vector3(i, j, k) * cube_size
