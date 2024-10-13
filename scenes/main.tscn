@@ -6,9 +6,16 @@
 
 [node name="root" type="Node3D"]
 
-[node name="marching_cubes" type="MeshInstance3D" parent="."]
+[node name="dynamic_ground" type="StaticBody3D" parent="."]
 script = ExtResource("1_lidwy")
-resolution = 11
+grid_size = Vector3i(20, 5, 20)
+
+[node name="mesh" type="MeshInstance3D" parent="dynamic_ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+skeleton = NodePath("../..")
+
+[node name="collision" type="CollisionShape3D" parent="dynamic_ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 
 [node name="plane" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_l3mta")

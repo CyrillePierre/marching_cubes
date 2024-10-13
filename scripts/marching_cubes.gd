@@ -1,12 +1,12 @@
 @tool
-extends MeshInstance3D
+extends StaticBody3D
 
 class Cell:
 	var density: Array[float]
 	var points: Array[Vector3]
 	var index: int
 
-@export var resolution: int = 1
+@export var grid_size: Vector3i = Vector3i(1, 1, 1)
 
 @export var cube_size: float = 1.
 		
@@ -322,41 +322,39 @@ func _process(_delta: float) -> void:
 	pass
 	
 func reset() -> void:
-	if mesh is ArrayMesh:
-		mesh.clear_surfaces()
 	initialize_density_map()
 	create_cells()
 	create_mesh()
 
 func initialize_density_map() -> void:
 	_density_map = PackedFloat32Array()
-	_density_map.resize((resolution + 1) ** 3)
+	_density_map.resize((grid_size.x + 1) * (grid_size.y + 1) * (grid_size.z + 1))
 	_density_map.fill(1.)
 	
-	for i in range(1, resolution - 1):
-		for j in range(1, resolution - 1):
-			for k in range(1, resolution - 1):
+	for i in range(1, grid_size.x - 1):
+		for j in range(1, grid_size.y - 1):
+			for k in range(1, grid_size.z - 1):
 				set_density(i, j, k, randf_range(-1, 1))
 				
 func get_density(i: int, j: int, k: int) -> float:
-	return _density_map[i + (j + k * (resolution + 1)) * (resolution + 1)]
+	return _density_map[i + (j + k * (grid_size.y + 1)) * (grid_size.x + 1)]
 	
 func set_density(i: int, j: int, k: int, value: float) -> void:
-	_density_map[i + (j + k * (resolution + 1)) * (resolution + 1)] = value
+	_density_map[i + (j + k * (grid_size.y + 1)) * (grid_size.x + 1)] = value
 
 func create_cells():
 	_cells = []
-	_cells.resize((resolution) ** 3)
+	_cells.resize(grid_size.x * grid_size.y * grid_size.z)
 	var index = 0
-	for i in range(resolution):
-		for j in range(resolution):
-			for k in range(resolution):
+	for i in range(grid_size.x):
+		for j in range(grid_size.y):
+			for k in range(grid_size.z):
 				_cells[index] = create_cell(i, j, k)
 				index += 1
 
 func create_cell(i: int, j: int, k: int) -> Dictionary:
 	var cell = {
-		v = [
+		v = [  # order: _, X, XZ, Z, Y, XY, XYZ
 			get_density(i + 0, j + 0, k + 0),
 			get_density(i + 1, j + 0, k + 0),
 			get_density(i + 1, j + 0, k + 1),
@@ -403,7 +401,12 @@ func create_mesh() -> void:
 	
 	var array_mesh = ArrayMesh.new()
 	array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	mesh = array_mesh
+	
+	var shape = ConcavePolygonShape3D.new()
+	shape.set_faces(vertices)
+	
+	$mesh.mesh = array_mesh
+	$collision.shape = shape
 	
 func get_pos(i: int, j: int, k: int) -> Vector3:
 	return Vector3(i, j, k) * cube_size
