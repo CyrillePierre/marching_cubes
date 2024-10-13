@@ -7,17 +7,27 @@ class Cell:
 	var index: int
 
 @export var grid_size: Vector3i = Vector3i(1, 1, 1)
-
 @export var cube_size: float = 1.
+@export var height_map: Texture2D
+@export var height_coef: float = 1
+@export var height_offset: float = 0 
 		
 @export var update: bool:
 	set(value):
-		reset()
+		_initialized = false
+	get:
+		return false
+		
+@export var clear: bool:
+	set(value):
+		$mesh.mesh = null
+		$collision.shape = null
 	get:
 		return false
 
 var _density_map: PackedFloat32Array
 var _cells: Array[Dictionary]
+var _initialized = false
 
 const EDGE_TABLE = [
 	0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -319,23 +329,38 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	if not _initialized:
+		reset()
 	
 func reset() -> void:
-	initialize_density_map()
-	create_cells()
-	create_mesh()
+	if initialize_density_map():
+		create_cells()
+		create_mesh()
+		_initialized = true
 
-func initialize_density_map() -> void:
+func initialize_density_map() -> bool:
 	_density_map = PackedFloat32Array()
 	_density_map.resize((grid_size.x + 1) * (grid_size.y + 1) * (grid_size.z + 1))
 	_density_map.fill(1.)
 	
+	# If the rendering engine has not drawn the frame, texture will be empty
+	var height_data = height_map.get_image()
+	if height_data == null:
+		return false
+		
+	var img_size = height_data.get_size()
+	var area_size = Vector2i(grid_size.x - 1, grid_size.z - 1)
+	
 	for i in range(1, grid_size.x - 1):
-		for j in range(1, grid_size.y - 1):
-			for k in range(1, grid_size.z - 1):
-				set_density(i, j, k, randf_range(-1, 1))
+		for k in range(1, grid_size.z - 1):
+			for j in range(1, grid_size.y - 1):
+				var color = height_data.get_pixelv(Vector2i(i - 1, k - 1) * img_size / area_size)
+				var height = (color.r - .5) * height_coef + height_offset
+				var density = (j - 1.) / (grid_size.y - 2.) - height
+				set_density(i, j, k, density)
 				
+	return true
+
 func get_density(i: int, j: int, k: int) -> float:
 	return _density_map[i + (j + k * (grid_size.y + 1)) * (grid_size.x + 1)]
 	
