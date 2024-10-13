@@ -6,19 +6,9 @@ class Cell:
 	var points: Array[Vector3]
 	var index: int
 
-@export var resolution = 2:
-	set(value):
-		_resolution = value
-		reset()
-	get:
-		return _resolution
+@export var resolution: int = 1
 
-@export var cube_size = 0.5:
-	set(value):
-		_cube_size = value
-		reset()
-	get:
-		return _cube_size
+@export var cube_size: float = 1.
 		
 @export var update: bool:
 	set(value):
@@ -27,8 +17,6 @@ class Cell:
 		return false
 
 var _density_map: PackedFloat32Array
-var _resolution: int = 2
-var _cube_size: float = 0.5
 var _cells: Array[Dictionary]
 
 const EDGE_TABLE = [
@@ -342,24 +330,24 @@ func reset() -> void:
 
 func initialize_density_map() -> void:
 	_density_map = PackedFloat32Array()
-	_density_map.resize(resolution ** 3)
-	_density_map.fill(-1.)
+	_density_map.resize((resolution + 1) ** 3)
+	_density_map.fill(1.)
 	
-	set_density(0, 1, 1, 1.0)
+	set_density(1, 1, 1, -1.0)
 				
 func get_density(i: int, j: int, k: int) -> float:
-	return _density_map[i + (j + k * _resolution) * _resolution]
+	return _density_map[i + (j + k * (resolution + 1)) * (resolution + 1)]
 	
 func set_density(i: int, j: int, k: int, value: float) -> void:
-	_density_map[i + (j + k * _resolution) * _resolution] = value
+	_density_map[i + (j + k * (resolution + 1)) * (resolution + 1)] = value
 
 func create_cells():
 	_cells = []
-	_cells.resize((resolution - 1) ** 3)
+	_cells.resize((resolution) ** 3)
 	var index = 0
-	for i in range(resolution - 1):
-		for j in range(resolution - 1):
-			for k in range(resolution - 1):
+	for i in range(resolution):
+		for j in range(resolution):
+			for k in range(resolution):
 				_cells[index] = create_cell(i, j, k)
 				index += 1
 
@@ -368,22 +356,22 @@ func create_cell(i: int, j: int, k: int) -> Dictionary:
 		v = [
 			get_density(i + 0, j + 0, k + 0),
 			get_density(i + 1, j + 0, k + 0),
+			get_density(i + 1, j + 0, k + 1),
+			get_density(i + 0, j + 0, k + 1),
 			get_density(i + 0, j + 1, k + 0),
 			get_density(i + 1, j + 1, k + 0),
-			get_density(i + 0, j + 0, k + 1),
-			get_density(i + 1, j + 0, k + 1),
-			get_density(i + 0, j + 1, k + 1),
 			get_density(i + 1, j + 1, k + 1),
+			get_density(i + 0, j + 1, k + 1),
 		],
 		p = [
 			get_pos(i + 0, j + 0, k + 0),
 			get_pos(i + 1, j + 0, k + 0),
+			get_pos(i + 1, j + 0, k + 1),
+			get_pos(i + 0, j + 0, k + 1),
 			get_pos(i + 0, j + 1, k + 0),
 			get_pos(i + 1, j + 1, k + 0),
-			get_pos(i + 0, j + 0, k + 1),
-			get_pos(i + 1, j + 0, k + 1),
-			get_pos(i + 0, j + 1, k + 1),
 			get_pos(i + 1, j + 1, k + 1),
+			get_pos(i + 0, j + 1, k + 1),
 		],
 	}
 	cell.index = cube_index(cell)
@@ -401,8 +389,6 @@ func create_mesh() -> void:
 	
 	for cell in _cells:
 		var triangles = create_triangles(cell)
-		print('--------------')
-		print(triangles)
 		if triangles.n > 0:
 			vertices.append_array(triangles.vertices)
 			normals.append_array(triangles.normals)
@@ -417,13 +403,13 @@ func create_mesh() -> void:
 	mesh = array_mesh
 	
 func get_pos(i: int, j: int, k: int) -> Vector3:
-	return Vector3(i, j, k) * _cube_size
+	return Vector3(i, j, k) * cube_size
 	
 func interp(p1: Vector3, p2: Vector3, v1: float, v2: float) -> Vector3:
 	const epsilon = 1e-5   
 	if abs(v1) < epsilon: return p1
 	if abs(v2) < epsilon: return p2
-	return p1 + v1 / (v2 - v1) * (p2 - p1)
+	return p1 - v1 / (v2 - v1) * (p2 - p1)
 	
 func create_triangles(cell: Dictionary) -> Dictionary:
 	var edge_index = EDGE_TABLE[cell.index]
