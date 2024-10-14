@@ -351,9 +351,9 @@ func initialize_density_map() -> bool:
 	var img_size = height_data.get_size()
 	var area_size = Vector2i(grid_size.x - 1, grid_size.z - 1)
 	
-	for i in range(1, grid_size.x - 1):
-		for k in range(1, grid_size.z - 1):
-			for j in range(1, grid_size.y - 1):
+	for i in range(1, grid_size.x):
+		for k in range(1, grid_size.z):
+			for j in range(1, grid_size.y):
 				var color = height_data.get_pixelv(Vector2i(i - 1, k - 1) * img_size / area_size)
 				var height = (color.r - .5) * height_coef + height_offset
 				var density = (j - 1.) / (grid_size.y - 2.) - height
@@ -403,7 +403,7 @@ func create_cell(i: int, j: int, k: int) -> Dictionary:
 	cell.index = cube_index(cell)
 	return cell
 	
-func cube_index(cell: Dictionary):
+func cube_index(cell: Dictionary) -> int:
 	var index = 0
 	for i in range(8):
 		if cell.v[i] > 0.: index |= 1 << i
@@ -482,3 +482,10 @@ func create_triangles(cell: Dictionary) -> Dictionary:
 		i += 3
 		
 	return triangles
+	
+func get_cell_index(point: Vector3) -> Vector3i:
+	return Vector3i(to_local(point) / cube_size)
+	
+func draw_density(point: Vector3, value: float, radius: float) -> void:
+	var index = get_cell_index(point)
+	print("index:", index)

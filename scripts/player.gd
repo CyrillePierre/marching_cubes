@@ -9,9 +9,14 @@ const CAM_ANGLE_MAX = 70
 
 @onready var camera = get_node("rotation_point/camera")
 @onready var rotPt = get_node("rotation_point")
+@onready var raycast = get_node("rotation_point/raycast")
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	add_user_signal("raycast_action", [
+		{ "name": "point", "type": TYPE_VECTOR3 },
+		{ "name": "value", "type": TYPE_FLOAT },
+	])
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -34,6 +39,14 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+	
+	if Input.is_action_just_pressed("inflate") && raycast.is_colliding():
+		var target_point = raycast.get_collision_point()
+		emit_signal("raycast_action", target_point, 1.)
+	
+	if Input.is_action_just_pressed("deflate") && raycast.is_colliding():
+		var target_point = raycast.get_collision_point()
+		emit_signal("raycast_action", target_point, -1.)
 
 func _input(event):
 	if event is InputEventMouseMotion:
