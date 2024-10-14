@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://by8qnc433323d"]
+[gd_scene load_steps=7 format=3 uid="uid://by8qnc433323d"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_833iu"]
 
@@ -9,6 +9,22 @@ height = 1.7
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0wybv"]
 radius = 0.3
 height = 1.7
+
+[sub_resource type="Shader" id="Shader_rs8qc"]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment() {
+	vec2 pos = UV * 2. - 1.;
+	COLOR.a = 1. - smoothstep(.3, 1., length(pos)) - .3;
+	COLOR.rgb = vec3(1.);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gjnc1"]
+shader = SubResource("Shader_rs8qc")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bi7uq"]
+size = Vector2(7, 7)
 
 [node name="player" type="CharacterBody3D"]
 script = ExtResource("1_833iu")
@@ -26,3 +42,15 @@ current = true
 [node name="mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 mesh = SubResource("CapsuleMesh_0wybv")
+
+[node name="hud" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="hud"]
+material = SubResource("ShaderMaterial_gjnc1")
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_bi7uq")
