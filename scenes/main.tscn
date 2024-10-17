@@ -5,17 +5,16 @@
 [ext_resource type="PackedScene" uid="uid://by8qnc433323d" path="res://nodes/player.tscn" id="2_q6x1v"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m02rb"]
-seed = 1460
-frequency = 0.0289
-fractal_octaves = 2
-domain_warp_enabled = true
-domain_warp_amplitude = 13.41
-domain_warp_frequency = 0.02
+seed = 7855
+frequency = 0.0049
+fractal_octaves = 3
+fractal_lacunarity = 1.775
+fractal_gain = 0.37
+domain_warp_amplitude = 100.0
+domain_warp_frequency = 0.004
 domain_warp_fractal_octaves = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_8o6ga"]
-width = 64
-height = 64
 in_3d_space = true
 generate_mipmaps = false
 noise = SubResource("FastNoiseLite_m02rb")
@@ -29,18 +28,17 @@ points = PackedVector3Array(-1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1)
 script = ExtResource("1_1ab21")
 
 [node name="dynamic_terrain" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
 script = ExtResource("1_lidwy")
-grid_size = Vector3i(40, 20, 40)
+grid_size = Vector3i(8, 10, 8)
 height_map = SubResource("NoiseTexture2D_8o6ga")
-height_coef = 1.05
-height_offset = 0.315
+height_coef = 0.05
+height_offset = 0.3
 
 [node name="mesh" type="MeshInstance3D" parent="dynamic_terrain"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 skeleton = NodePath("../..")
 
 [node name="collision" type="CollisionShape3D" parent="dynamic_terrain"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 
 [node name="platform" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 10, 2)

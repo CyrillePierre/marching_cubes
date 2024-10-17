@@ -371,10 +371,10 @@ func create_cells():
 	_cells = []
 	_cells.resize(grid_size.x * grid_size.y * grid_size.z)
 	var index = 0
-	for i in range(grid_size.x):
+	for k in range(grid_size.z):
 		for j in range(grid_size.y):
-			for k in range(grid_size.z):
-				_cells[index] = create_cell(i, j, k)
+			for i in range(grid_size.x):
+				_cells[i + (j + k * grid_size.y) * grid_size.x] = create_cell(i, j, k)
 				index += 1
 
 func create_cell(i: int, j: int, k: int) -> Dictionary:
@@ -484,8 +484,28 @@ func create_triangles(cell: Dictionary) -> Dictionary:
 	return triangles
 	
 func get_cell_index(point: Vector3) -> Vector3i:
-	return Vector3i(to_local(point) / cube_size)
+	return Vector3i(point / cube_size)
 	
 func draw_density(point: Vector3, value: float, radius: float) -> void:
 	var index = get_cell_index(point)
-	print("index:", index)
+	var n = floori(radius / cube_size)
+	
+	# update density in cells around the point
+	#for k in range(max(1, index.z - n), min(grid_size.z, index.z + n)):
+		#for j in range(max(1, index.y - n), min(grid_size.y, index.y + n)):
+			#for i in range(max(1, index.x - n), min(grid_size.x, index.x + n)):
+				#var cell = _cells[i + (j + k * grid_size.y) * grid_size.x]
+				#_update_cell_density(cell, point, value, radius)
+	var cell = _cells[index.x + (index.y + index.z * grid_size.y) * grid_size.x]
+	_update_cell_density(cell, point, value, radius)
+	
+	create_mesh()
+
+func _update_cell_density(cell: Dictionary, point: Vector3, value: float, radius: float):
+	var sq_radius = radius * radius
+	for i in range(8):
+		var cell_point = cell.p[i]
+		var distance = point.distance_squared_to(cell.p[i])
+		var coef = max(0., 1. - point.distance_to(cell.p[i]) / radius)
+		cell.v[i] = clampf(cell.v[i] - 0.2, -1, 1)
+	print(cell)

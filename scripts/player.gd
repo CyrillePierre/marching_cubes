@@ -1,11 +1,11 @@
 extends CharacterBody3D
 
 const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
+const JUMP_VELOCITY = 6.
 
 const MOUSE_SENSITIVITY_X = .4
 const MOUSE_SENSITIVITY_Y = .2
-const CAM_ANGLE_MAX = 70
+const CAM_ANGLE_MAX = 89
 
 @onready var camera = get_node("rotation_point/camera")
 @onready var rotPt = get_node("rotation_point")
